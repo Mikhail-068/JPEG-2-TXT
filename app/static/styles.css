@@ -68,7 +68,7 @@ body {
   position: absolute;
   inset: 0;
   display: block;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @media (prefers-reduced-motion: reduce) {
