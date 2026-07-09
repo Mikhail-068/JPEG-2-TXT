@@ -12,6 +12,8 @@ sample-test.*
 *.jpeg
 *.png
 *.webp
+!app/static/fon_1.jpg
+!app/static/qwen.png
 
 design/
 output/

@@ -1,6 +1,6 @@
 :root {
-  --bg: #eef1f8;
-  --surface: rgba(255, 255, 255, 0.72);
+  --bg: #17172f;
+  --surface: rgba(255, 255, 255, 0.82);
   --surface-solid: #ffffff;
   --text: #141a2b;
   --muted: #6a7288;
@@ -53,7 +53,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Aurora background ------------------------------------------------------ */
+/* Background image ------------------------------------------------------- */
 .bg-decor {
   position: fixed;
   inset: 0;
@@ -61,60 +61,21 @@ body {
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(60% 50% at 10% 100%, rgba(123, 110, 246, 0.1), transparent 60%),
-    radial-gradient(50% 45% at 95% 100%, rgba(96, 165, 250, 0.08), transparent 60%);
-}
-
-.bg-decor::before,
-.bg-decor::after,
-.bg-decor > span {
-  content: "";
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.7;
-  will-change: transform;
+    linear-gradient(180deg, rgba(28, 24, 70, 0.16) 0%, rgba(238, 241, 248, 0.42) 32%, rgba(238, 241, 248, 0.68) 100%),
+    radial-gradient(70% 55% at 50% 18%, rgba(139, 123, 255, 0.24), transparent 62%),
+    url("/static/fon_1.jpg") center / cover no-repeat;
 }
 
 .bg-decor::before {
-  width: 46vw;
-  height: 46vw;
-  top: -12vw;
-  left: -6vw;
-  background: radial-gradient(circle, rgba(123, 110, 246, 0.55), transparent 68%);
-  animation: drift1 18s ease-in-out infinite alternate;
-}
-
-.bg-decor::after {
-  width: 42vw;
-  height: 42vw;
-  top: -10vw;
-  right: -8vw;
-  background: radial-gradient(circle, rgba(96, 165, 250, 0.5), transparent 68%);
-  animation: drift2 22s ease-in-out infinite alternate;
-}
-
-.bg-decor > span {
-  width: 38vw;
-  height: 38vw;
-  bottom: -14vw;
-  left: 38vw;
-  background: radial-gradient(circle, rgba(139, 123, 255, 0.4), transparent 68%);
-  animation: drift3 26s ease-in-out infinite alternate;
-}
-
-@keyframes drift1 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(8vw, 6vh) scale(1.12); }
-}
-@keyframes drift2 {
-  from { transform: translate(0, 0) scale(1.05); }
-  to   { transform: translate(-7vw, 5vh) scale(0.95); }
-}
-@keyframes drift3 {
-  from { transform: translate(0, 0) scale(0.95); }
-  to   { transform: translate(-5vw, -8vh) scale(1.1); }
+  content: "";
+  position: absolute;
+  inset: 81px 0 0;
+  display: block;
+  background:
+    linear-gradient(90deg, rgba(238, 241, 248, 0.78), rgba(238, 241, 248, 0.48), rgba(238, 241, 248, 0.78)),
+    rgba(238, 241, 248, 0.18);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
 }
 
 @media (prefers-reduced-motion: reduce) {
