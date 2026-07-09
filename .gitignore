@@ -15,6 +15,7 @@ sample-test.*
 *.jpeg
 *.png
 *.webp
+!app/static/qwen.png
 
 # Keep the default prompt, but ignore other runtime data.
 data/*

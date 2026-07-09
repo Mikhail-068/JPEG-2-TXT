@@ -63,6 +63,19 @@ h2 {
   margin-top: 6px;
 }
 
+.model-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.model-brand img,
+.step-model img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: minmax(360px, 0.95fr) minmax(460px, 1.05fr);
@@ -322,12 +335,24 @@ button:disabled {
 
 .steps {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   margin-top: 10px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
+}
+
+.step-model {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-model img {
+  width: 18px;
+  height: 18px;
 }
 
 .steps span.active {

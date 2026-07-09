@@ -10,7 +10,10 @@
     <header class="topbar">
       <div>
         <h1>JPG/PDF -> TXT</h1>
-        <p>Распознавание текста через Qwen Vision</p>
+        <p class="model-brand">
+          <img src="/static/qwen.png" alt="" />
+          <span>Распознавание текста через Qwen Vision</span>
+        </p>
       </div>
       <button class="secondary" id="promptButton" type="button">Промпт</button>
     </header>
@@ -56,7 +59,10 @@
           </div>
           <div class="steps">
             <span id="stepUpload">Загрузка</span>
-            <span id="stepVision">Qwen Vision</span>
+            <span id="stepVision" class="step-model">
+              <img src="/static/qwen.png" alt="" />
+              Qwen Vision
+            </span>
             <span id="stepDone">Готово</span>
           </div>
         </div>
