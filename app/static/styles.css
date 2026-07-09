@@ -63,6 +63,14 @@ body {
   background: url("/static/fon_1.jpg") center / cover no-repeat;
 }
 
+.bg-decor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: rgba(255, 255, 255, 0.1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bg-decor::before,
   .bg-decor::after,
