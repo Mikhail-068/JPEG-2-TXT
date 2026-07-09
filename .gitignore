@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local data and real documents
+примеры/
+sample-test.*
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.webp
+
+# Keep the default prompt, but ignore other runtime data.
+data/*
+!data/prompt.txt
+
+# Local notes and generated design/QA artifacts
+1.md
+design/
+output/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JPG/PDF -> TXT</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>JPG/PDF -> TXT</h1>
+        <p>Распознавание текста через Qwen Vision</p>
+      </div>
+      <button class="secondary" id="promptButton" type="button">Промпт</button>
+    </header>
+
+    <main class="workspace">
+      <section class="upload-panel">
+        <div class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*" />
+          <div class="drop-icon">TXT</div>
+          <h2>Перетащите PDF или изображение</h2>
+          <p>Поддерживаются PDF, JPEG, PNG и WEBP. PDF будет обработан постранично.</p>
+          <button class="primary" id="pickButton" type="button">Выбрать файл</button>
+        </div>
+
+        <div class="preview" id="preview" hidden>
+          <div class="preview-head">
+            <div>
+              <span class="label">Оригинал</span>
+              <strong id="previewName"></strong>
+            </div>
+            <div class="preview-actions">
+              <button class="primary small-button" id="runButton" type="button">Распознать</button>
+              <button class="secondary small-button" id="clearButton" type="button">Сбросить</button>
+            </div>
+          </div>
+          <div class="preview-frame" id="previewFrame"></div>
+        </div>
+
+        <div class="file-row" id="fileRow" hidden>
+          <div>
+            <span class="label">Файл</span>
+            <strong id="fileName"></strong>
+          </div>
+        </div>
+
+        <div class="progress-block" id="progressBlock" hidden>
+          <div class="progress-head">
+            <span id="progressLabel">Подготовка</span>
+            <strong id="progressValue">0%</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="steps">
+            <span id="stepUpload">Загрузка</span>
+            <span id="stepVision">Qwen Vision</span>
+            <span id="stepDone">Готово</span>
+          </div>
+        </div>
+
+        <div class="status" id="status">Готов к загрузке.</div>
+      </section>
+
+      <section class="result-panel">
+        <div class="result-header">
+          <div>
+            <span class="label">Результат</span>
+            <h2>Выжимка документа</h2>
+          </div>
+          <div class="actions">
+            <button class="secondary" id="copyButton" type="button">Копировать</button>
+            <button class="secondary" id="downloadButton" type="button">Скачать .txt</button>
+            <button class="secondary" id="downloadJsonButton" type="button">Скачать .json</button>
+          </div>
+        </div>
+        <div id="resultEmpty" class="result-empty">Здесь появится структурированная выжимка. TXT можно будет скачать отдельно.</div>
+        <article id="renderedOutput" class="markdown-body" hidden></article>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="promptModal" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="promptTitle">
+        <div class="modal-head">
+          <div>
+            <span class="label">Поведение модели</span>
+            <h2 id="promptTitle">Промпт Qwen</h2>
+          </div>
+          <button class="icon-button" id="closePromptButton" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <textarea id="promptEditor" spellcheck="false"></textarea>
+        <div class="modal-actions">
+          <button class="secondary" id="cancelPromptButton" type="button">Отмена</button>
+          <button class="primary" id="savePromptButton" type="button">Сохранить</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

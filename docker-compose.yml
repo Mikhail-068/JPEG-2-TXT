@@ -1,0 +1,28 @@
+services:
+  jpg-txt-web:
+    build: .
+    image: jpg-txt-web:latest
+    container_name: jpg-txt-web
+    restart: unless-stopped
+    environment:
+      OLLAMA_BASE_URL: http://nm-ollama:11434
+      OLLAMA_MODEL: qwen3.6:35b-a3b-q4_K_M
+      DATA_DIR: /data
+      PDF_DPI: "150"
+      MAX_PDF_PAGES: "30"
+      OLLAMA_NUM_CTX: "4096"
+      OLLAMA_NUM_PREDICT: "2048"
+      MAX_IMAGE_SIDE: "1024"
+      JPEG_QUALITY: "85"
+      OLLAMA_TIMEOUT_SECONDS: "900"
+    volumes:
+      - ./data:/data
+    ports:
+      - "8090:8090"
+    networks:
+      - nm-monitor
+
+networks:
+  nm-monitor:
+    external: true
+    name: nm-monitor_default
