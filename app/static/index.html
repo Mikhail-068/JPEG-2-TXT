@@ -3,17 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JPG/PDF -> TXT</title>
-    <link rel="stylesheet" href="/static/styles.css" />
+    <title>JPG/PDF → TXT</title>
+    <link rel="stylesheet" href="/static/styles.css?v=3" />
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <h1>JPG/PDF -> TXT</h1>
-        <p class="model-brand">
-          <img src="/static/qwen.png" alt="" />
-          <span>Распознавание текста через Qwen Vision</span>
-        </p>
+      <div class="brand">
+        <span class="brand-logo">
+          <img src="/static/qwen.png?v=3" alt="Qwen" />
+        </span>
+        <div class="brand-text">
+          <h1>JPG/PDF → TXT</h1>
+          <p class="model-brand">Распознавание текста через Qwen Vision</p>
+        </div>
       </div>
       <button class="secondary" id="promptButton" type="button">Промпт</button>
     </header>
@@ -60,7 +62,7 @@
           <div class="steps">
             <span id="stepUpload">Загрузка</span>
             <span id="stepVision" class="step-model">
-              <img src="/static/qwen.png" alt="" />
+              <img src="/static/qwen.png?v=3" alt="" />
               Qwen Vision
             </span>
             <span id="stepDone">Готово</span>
@@ -104,6 +106,6 @@
       </section>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=3"></script>
   </body>
 </html>
