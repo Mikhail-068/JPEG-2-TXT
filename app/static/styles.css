@@ -863,12 +863,46 @@ textarea:focus {
   tab-size: 2;
 }
 
+.scramble-char {
+  display: inline-block;
+  min-width: 0.58ch;
+  transform-origin: center;
+  transition:
+    transform 80ms linear,
+    opacity 80ms linear,
+    filter 80ms linear;
+}
+
+.scramble-char.decoded {
+  animation: charSettle 0.22s ease both;
+}
+
+.scramble-char.decoded.settled {
+  animation: none;
+}
+
+.scramble-char.noise {
+  color: rgba(20, 26, 43, 0.42);
+  opacity: 0.52;
+}
+
+.scramble-char.noise.fading {
+  color: var(--accent);
+  opacity: 0.36;
+  filter: blur(2px);
+}
+
 /* A character still being decoded: blurred + glowing accent */
 .scramble-char.scrambling {
   color: var(--accent);
   text-shadow: 0 0 8px rgba(139, 123, 255, 0.85);
   filter: blur(1.6px);
   animation: charDecode 0.4s ease;
+}
+
+.scramble-char.scattering-away {
+  color: var(--accent-dark);
+  text-shadow: 0 0 10px rgba(139, 123, 255, 0.5);
 }
 
 /* Cursor that chases the decode front */
@@ -885,6 +919,19 @@ textarea:focus {
   0%   { filter: blur(5px); opacity: 0.4; }
   60%  { filter: blur(2px); opacity: 0.8; }
   100% { filter: blur(1.6px); opacity: 1; }
+}
+
+@keyframes charSettle {
+  0% {
+    opacity: 0.58;
+    transform: translateY(-2px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
 @keyframes cursorBlink {
@@ -913,6 +960,17 @@ textarea:focus {
   background: var(--accent);
   box-shadow: 0 0 8px rgba(139, 123, 255, 0.9);
   animation: pulseDot 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scramble-char,
+  .scramble-char.decoded,
+  .scramble-char.scrambling,
+  .scramble-cursor,
+  .scramble-dot {
+    animation: none;
+    transition: none;
+  }
 }
 
 /* Login page ------------------------------------------------------------ */

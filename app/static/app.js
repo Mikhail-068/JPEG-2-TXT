@@ -293,25 +293,44 @@ const SCRAMBLE_TEMPLATE = [
   "Примечания: ____________________",
 ].join("\n");
 
-let scrambleState = { timer: null, reveal: 0 };
+let scrambleState = { timer: null, frame: 0 };
 
 function randomChar() {
   return SCRAMBLE_POOL[Math.floor(Math.random() * SCRAMBLE_POOL.length)];
+}
+
+function scatterStyle(index, progress) {
+  const angle = ((index * 137.5) % 360) * (Math.PI / 180);
+  const distance = (12 + (index % 9) * 4) * progress;
+  const dx = Math.cos(angle) * distance;
+  const dy = Math.sin(angle) * distance;
+  const rotation = ((index % 11) - 5) * 7 * progress;
+  return `style="transform: translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${rotation.toFixed(1)}deg); opacity: ${(1 - progress * 0.68).toFixed(2)}; filter: blur(${(progress * 3.2).toFixed(1)}px);"`;
+}
+
+function renderScrambleChar(content, className = "", style = "") {
+  return `<span class="scramble-char ${className}" ${style}>${escapeHtml(content)}</span>`;
 }
 
 function startScramble() {
   resultEmpty.hidden = true;
   renderedOutput.hidden = true;
   processingOverlay.hidden = false;
-  scrambleState.reveal = 0;
+  scrambleState.frame = 0;
+  clearInterval(scrambleState.timer);
 
   const render = () => {
     const total = SCRAMBLE_TEMPLATE.length;
-    // advance the decode front; reset to loop forever while waiting
-    scrambleState.reveal = Math.min(total, scrambleState.reveal + 3);
-    if (scrambleState.reveal >= total) {
-      scrambleState.reveal = 0;
-    }
+    const cycle = 172;
+    const assembleEnd = 92;
+    const holdEnd = 120;
+    const scatterEnd = 158;
+    const phase = scrambleState.frame % cycle;
+    const isAssembling = phase < assembleEnd;
+    const isHolding = phase >= assembleEnd && phase < holdEnd;
+    const isScattering = phase >= holdEnd && phase < scatterEnd;
+    const scatterProgress = isScattering ? (phase - holdEnd) / (scatterEnd - holdEnd) : 0;
+    const reveal = isAssembling ? Math.floor(total * (phase / assembleEnd)) : total;
 
     let out = "";
     for (let i = 0; i < total; i++) {
@@ -320,19 +339,29 @@ function startScramble() {
         out += "\n";
         continue;
       }
-      const dist = i - scrambleState.reveal;
-      if (dist < 0) {
-        // already decoded: sharp
-        out += ch;
-      } else if (dist < 6) {
-        // decode front: blurred + glowing random
-        out += `<span class="scramble-char scrambling">${randomChar()}</span>`;
+
+      if (isScattering) {
+        out += renderScrambleChar(ch, "scattering-away", scatterStyle(i, scatterProgress));
+        continue;
+      }
+
+      if (!isAssembling && !isHolding) {
+        out += renderScrambleChar(randomChar(), "noise fading");
+        continue;
+      }
+
+      const dist = i - reveal;
+      if (dist < 0 || isHolding) {
+        out += renderScrambleChar(ch, isHolding ? "decoded settled" : "decoded");
+      } else if (dist < 8) {
+        out += renderScrambleChar(randomChar(), "scrambling");
       } else {
-        // not yet reached: faint noise
-        out += `<span class="scramble-char">${randomChar()}</span>`;
+        out += renderScrambleChar(randomChar(), "noise");
       }
     }
-    scrambleText.innerHTML = out + '<span class="scramble-cursor">▋</span>';
+    const cursor = isAssembling ? '<span class="scramble-cursor">▋</span>' : "";
+    scrambleText.innerHTML = out + cursor;
+    scrambleState.frame += 1;
   };
 
   render();
