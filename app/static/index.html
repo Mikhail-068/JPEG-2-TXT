@@ -30,6 +30,9 @@
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
             Промпт
           </button>
+          <button class="secondary icon-only" id="logoutButton" type="button" title="Выйти" aria-label="Выйти">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </button>
         </div>
       </div>
     </header>
@@ -129,6 +132,13 @@
           <button class="icon-button" id="closePromptButton" type="button" aria-label="Закрыть">×</button>
         </div>
         <textarea id="promptEditor" spellcheck="false"></textarea>
+        <div class="modal-pin-row">
+          <label class="field">
+            <span class="label">PIN для сохранения</span>
+            <input id="promptPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="••••" autocomplete="off" />
+          </label>
+          <div id="promptError" class="login-error" hidden></div>
+        </div>
         <div class="modal-actions">
           <button class="secondary" id="cancelPromptButton" type="button">Отмена</button>
           <button class="primary" id="savePromptButton" type="button">Сохранить</button>

@@ -1,15 +1,17 @@
 import base64
 import io
 import os
+import secrets
 from pathlib import Path
 from typing import Any
 
 import fitz
 import httpx
 from PIL import Image
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, Depends
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from pydantic import BaseModel
 
 
@@ -50,12 +52,78 @@ DEFAULT_PROMPT = """Сделай краткую структурированну
 
 Если поле не найдено, напиши: не указано."""
 
+# Auth config (override via env) ------------------------------------------------
+AUTH_USERNAME = os.getenv("AUTH_USERNAME", "admin")
+AUTH_PASSWORD = os.getenv("AUTH_PASSWORD", "123456")
+PROMPT_PIN = os.getenv("PROMPT_PIN", "0000")
+SESSION_SECRET = os.getenv("SESSION_SECRET", "jpg-txt-dev-insecure-secret-change-me")
+SESSION_COOKIE = "jpg_txt_session"
+SESSION_MAX_AGE = 60 * 60 * 24 * 7  # 7 days
+
+_session_serializer = URLSafeTimedSerializer(SESSION_SECRET, salt="jpg-txt-auth")
+
+# Public paths that do not require authentication.
+PUBLIC_PATHS = {"/login", "/api/login", "/logout", "/health"}
+PUBLIC_PREFIXES = ("/static/",)
+
 app = FastAPI(title="JPG/PDF -> TXT", version="0.1.0")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
+def verify_credentials(username: str, password: str) -> bool:
+    user_ok = secrets.compare_digest(username, AUTH_USERNAME)
+    pass_ok = secrets.compare_digest(password, AUTH_PASSWORD)
+    return user_ok and pass_ok
+
+
+def create_session_cookie() -> str:
+    return _session_serializer.dumps({"u": AUTH_USERNAME})
+
+
+def read_session(request: Request) -> bool:
+    token = request.cookies.get(SESSION_COOKIE)
+    if not token:
+        return False
+    try:
+        _session_serializer.loads(token, max_age=SESSION_MAX_AGE)
+        return True
+    except (BadSignature, SignatureExpired):
+        return False
+
+
+def require_auth(request: Request) -> None:
+    if request.url.path in PUBLIC_PATHS or any(
+        request.url.path.startswith(p) for p in PUBLIC_PREFIXES
+    ):
+        return
+    if read_session(request):
+        return
+    raise HTTPException(status_code=401, detail="Требуется авторизация.")
+
+
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    try:
+        require_auth(request)
+    except HTTPException as exc:
+        if exc.status_code == 401 and not request.url.path.startswith("/api/"):
+            return RedirectResponse("/login", status_code=303)
+        return JSONResponse(status_code=401, content={"detail": exc.detail})
+    return await call_next(request)
+
+
 class PromptPayload(BaseModel):
     prompt: str
+
+
+class LoginPayload(BaseModel):
+    username: str
+    password: str
+
+
+class PromptPinPayload(BaseModel):
+    prompt: str
+    pin: str
 
 
 def ensure_prompt_file() -> None:
@@ -187,6 +255,34 @@ def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
+@app.get("/login")
+def login_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "login.html")
+
+
+@app.post("/api/login")
+async def login(payload: LoginPayload) -> JSONResponse:
+    if not verify_credentials(payload.username, payload.password):
+        raise HTTPException(status_code=401, detail="Неверный логин или пароль.")
+    response = JSONResponse({"ok": True})
+    response.set_cookie(
+        key=SESSION_COOKIE,
+        value=create_session_cookie(),
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        samesite="lax",
+        secure=False,
+    )
+    return response
+
+
+@app.post("/api/logout")
+async def logout() -> JSONResponse:
+    response = JSONResponse({"ok": True})
+    response.delete_cookie(SESSION_COOKIE)
+    return response
+
+
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -198,7 +294,9 @@ async def get_prompt() -> dict[str, str]:
 
 
 @app.put("/api/prompt")
-async def update_prompt(payload: PromptPayload) -> dict[str, str]:
+async def update_prompt(payload: PromptPinPayload) -> dict[str, str]:
+    if not secrets.compare_digest(payload.pin, PROMPT_PIN):
+        raise HTTPException(status_code=403, detail="Неверный PIN-код.")
     return {"prompt": write_prompt(payload.prompt)}
 
 

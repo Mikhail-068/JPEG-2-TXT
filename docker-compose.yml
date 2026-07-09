@@ -15,6 +15,10 @@ services:
       MAX_IMAGE_SIDE: "1024"
       JPEG_QUALITY: "85"
       OLLAMA_TIMEOUT_SECONDS: "900"
+      AUTH_USERNAME: admin
+      AUTH_PASSWORD: "123456"
+      PROMPT_PIN: "0000"
+      SESSION_SECRET: change-this-to-a-long-random-string-in-production
     volumes:
       - ./data:/data
     ports:

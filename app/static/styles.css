@@ -915,6 +915,108 @@ textarea:focus {
   animation: pulseDot 1.4s infinite;
 }
 
+/* Login page ------------------------------------------------------------ */
+.login-body {
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  padding: 36px 32px 30px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: panelIn 0.45s ease both;
+}
+
+.login-logo {
+  margin: 0 auto 18px;
+  width: 56px;
+  height: 56px;
+}
+
+.login-card h1 {
+  margin-bottom: 6px;
+}
+
+.login-sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field input,
+#promptPin {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+  font: inherit;
+  font-size: 14.5px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.field input:focus,
+#promptPin:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.login-error {
+  color: #d1372c;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Icon-only header button (logout) */
+.topbar .icon-only {
+  width: 42px;
+  padding: 0;
+}
+
+/* PIN row inside prompt modal */
+.modal-pin-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#promptPin {
+  letter-spacing: 0.4em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 /* Scrollbars ------------------------------------------------------------ */
 .upload-panel::-webkit-scrollbar,
 .result-empty::-webkit-scrollbar,

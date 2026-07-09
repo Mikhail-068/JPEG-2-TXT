@@ -44,9 +44,12 @@ const downloadJsonButton = document.querySelector("#downloadJsonButton");
 const promptButton = document.querySelector("#promptButton");
 const promptModal = document.querySelector("#promptModal");
 const promptEditor = document.querySelector("#promptEditor");
+const promptPin = document.querySelector("#promptPin");
+const promptError = document.querySelector("#promptError");
 const closePromptButton = document.querySelector("#closePromptButton");
 const cancelPromptButton = document.querySelector("#cancelPromptButton");
 const savePromptButton = document.querySelector("#savePromptButton");
+const logoutButton = document.querySelector("#logoutButton");
 const preview = document.querySelector("#preview");
 const previewFrame = document.querySelector("#previewFrame");
 const previewName = document.querySelector("#previewName");
@@ -389,6 +392,10 @@ function recognize() {
     stopScramble();
 
     if (request.status < 200 || request.status >= 300) {
+      if (request.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       setStatus(data.detail || "Ошибка распознавания.", "error");
       setProgress(0, "Ошибка");
       setBusy(false);
@@ -421,24 +428,46 @@ function recognize() {
 
 async function savePrompt() {
   const nextPrompt = promptEditor.value.trim();
+  const pin = promptPin.value.trim();
+
+  promptError.hidden = true;
+
   if (!nextPrompt) {
-    setStatus("Промпт не может быть пустым.", "error");
+    showPromptError("Промпт не может быть пустым.");
+    return;
+  }
+  if (!pin) {
+    showPromptError("Введите PIN-код для сохранения.");
     return;
   }
 
-  const response = await fetch("/api/prompt", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt: nextPrompt }),
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    setStatus(data.detail || "Не удалось сохранить промпт.", "error");
-    return;
+  savePromptButton.disabled = true;
+
+  try {
+    const response = await fetch("/api/prompt", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: nextPrompt, pin }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      showPromptError(data.detail || "Не удалось сохранить промпт.");
+      return;
+    }
+    state.prompt = data.prompt;
+    promptModal.hidden = true;
+    promptPin.value = "";
+    setStatus("Промпт сохранен. Новые запуски будут использовать его.", "success");
+  } catch {
+    showPromptError("Сетевая ошибка. Попробуйте ещё раз.");
+  } finally {
+    savePromptButton.disabled = false;
   }
-  state.prompt = data.prompt;
-  promptModal.hidden = true;
-  setStatus("Промпт сохранен. Новые запуски будут использовать его.", "success");
+}
+
+function showPromptError(message) {
+  promptError.textContent = message;
+  promptError.hidden = false;
 }
 
 function downloadText() {
@@ -513,6 +542,8 @@ dropzone.addEventListener("drop", (event) => {
 
 promptButton.addEventListener("click", () => {
   promptEditor.value = state.prompt;
+  promptPin.value = "";
+  promptError.hidden = true;
   promptModal.hidden = false;
   promptEditor.focus();
 });
@@ -526,6 +557,11 @@ cancelPromptButton.addEventListener("click", () => {
 });
 
 savePromptButton.addEventListener("click", savePrompt);
+
+logoutButton.addEventListener("click", async () => {
+  await fetch("/api/logout", { method: "POST" }).catch(() => undefined);
+  window.location.href = "/login";
+});
 
 copyButton.addEventListener("click", async () => {
   await navigator.clipboard.writeText(state.text);

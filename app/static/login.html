@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Вход · JPG/PDF → TXT</title>
+    <link rel="icon" type="image/png" href="/static/qwen.png?v=8" />
+    <link rel="stylesheet" href="/static/styles.css?v=8" />
+  </head>
+  <body class="login-body">
+    <div class="bg-decor" aria-hidden="true"><span></span></div>
+
+    <main class="login-card">
+      <div class="brand-logo login-logo">
+        <img src="/static/qwen.png?v=8" alt="Qwen" />
+      </div>
+      <h1>JPG/PDF <span class="arrow">→</span> TXT</h1>
+      <p class="login-sub">Войдите, чтобы продолжить</p>
+
+      <form id="loginForm" class="login-form" autocomplete="on">
+        <label class="field">
+          <span class="label">Логин</span>
+          <input id="username" name="username" type="text" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span class="label">Пароль</span>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+        </label>
+        <div id="loginError" class="login-error" hidden></div>
+        <button class="primary login-submit" id="loginSubmit" type="submit">Войти</button>
+      </form>
+    </main>
+
+    <script src="/static/login.js?v=8"></script>
+  </body>
+</html>
