@@ -394,7 +394,7 @@ function recognize() {
 
   const request = new XMLHttpRequest();
   request.open("POST", "/api/recognize");
-  request.timeout = 900000;
+  request.timeout = 0;
 
   request.upload.onprogress = (event) => {
     if (!event.lengthComputable) return;
