@@ -90,7 +90,7 @@ h2 {
 }
 
 .topbar-inner {
-  max-width: 1480px;
+  max-width: min(1840px, 96vw);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -173,10 +173,10 @@ h2 {
 .workspace {
   position: relative;
   z-index: 1;
-  max-width: 1480px;
+  max-width: min(1840px, 96vw);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(360px, 0.95fr) minmax(460px, 1.05fr);
+  grid-template-columns: minmax(440px, 1.12fr) minmax(440px, 1fr);
   gap: 22px;
   padding: 24px 32px 32px;
   height: calc(100vh - 81px);

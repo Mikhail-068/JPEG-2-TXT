@@ -129,7 +129,7 @@ function renderPreview(file) {
 
   if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
     const iframe = document.createElement("iframe");
-    iframe.src = state.previewUrl;
+    iframe.src = `${state.previewUrl}#toolbar=1&navpanes=0&view=FitH&zoom=page-width`;
     iframe.title = "Предпросмотр PDF";
     previewFrame.appendChild(iframe);
   } else {
