@@ -254,9 +254,15 @@ h2 {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #8b7bff;
-  box-shadow: 0 0 8px rgba(139, 123, 255, 0.9);
-  animation: pulseDot 2s infinite;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+  animation: pulseDotGreen 2s infinite;
+}
+
+@keyframes pulseDotGreen {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+  70% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 
 @keyframes pulseDot {
@@ -280,7 +286,7 @@ h2 {
 }
 
 .topbar .secondary svg {
-  color: var(--accent-2);
+  color: #60a5fa;
 }
 
 /* Workspace ------------------------------------------------------------- */
