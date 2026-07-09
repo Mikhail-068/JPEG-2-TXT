@@ -60,22 +60,7 @@ body {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(28, 24, 70, 0.16) 0%, rgba(238, 241, 248, 0.42) 32%, rgba(238, 241, 248, 0.68) 100%),
-    radial-gradient(70% 55% at 50% 18%, rgba(139, 123, 255, 0.24), transparent 62%),
-    url("/static/fon_1.jpg") center / cover no-repeat;
-}
-
-.bg-decor::before {
-  content: "";
-  position: absolute;
-  inset: 81px 0 0;
-  display: block;
-  background:
-    linear-gradient(90deg, rgba(238, 241, 248, 0.78), rgba(238, 241, 248, 0.48), rgba(238, 241, 248, 0.78)),
-    rgba(238, 241, 248, 0.18);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
+  background: url("/static/fon_1.jpg") center / cover no-repeat;
 }
 
 @media (prefers-reduced-motion: reduce) {
