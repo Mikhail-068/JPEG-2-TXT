@@ -60,6 +60,8 @@ const stepVision = document.querySelector("#stepVision");
 const stepDone = document.querySelector("#stepDone");
 const resultEmpty = document.querySelector("#resultEmpty");
 const renderedOutput = document.querySelector("#renderedOutput");
+const processingOverlay = document.querySelector("#processingOverlay");
+const scrambleText = document.querySelector("#scrambleText");
 
 function setStatus(message, type = "") {
   statusEl.textContent = message;
@@ -257,6 +259,92 @@ function showResult(text) {
   resultEmpty.hidden = Boolean(state.text);
 }
 
+/* Scramble / decode effect --------------------------------------------- */
+const SCRAMBLE_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789АБВГДЕЖЗИКЛМНОП#%&@/=+";
+const SCRAMBLE_TEMPLATE = [
+  "# Выжимка",
+  "",
+  "## Документ",
+  "Тип: ____________________",
+  "Номер: ______________",
+  "Дата: ________________",
+  "",
+  "## Стороны",
+  "Заказчик: ____________________",
+  "ИНН / КПП: _______________",
+  "Исполнитель: ____________________",
+  "",
+  "## Суммы",
+  "Итого: ______________ руб.",
+  "НДС: _______________",
+  "",
+  "## Таблица",
+  "| Позиция | Кол-во | Цена | Сумма |",
+  "| _______ | ______ | ____ | _____ |",
+  "",
+  "## Подписи и печати",
+  "Подписант: ____________________",
+  "Печать: ____________________",
+  "",
+  "## Важные детали",
+  "Примечания: ____________________",
+].join("\n");
+
+let scrambleState = { timer: null, reveal: 0 };
+
+function randomChar() {
+  return SCRAMBLE_POOL[Math.floor(Math.random() * SCRAMBLE_POOL.length)];
+}
+
+function startScramble() {
+  resultEmpty.hidden = true;
+  renderedOutput.hidden = true;
+  processingOverlay.hidden = false;
+  scrambleState.reveal = 0;
+
+  const render = () => {
+    const total = SCRAMBLE_TEMPLATE.length;
+    // advance the decode front; reset to loop forever while waiting
+    scrambleState.reveal = Math.min(total, scrambleState.reveal + 3);
+    if (scrambleState.reveal >= total) {
+      scrambleState.reveal = 0;
+    }
+
+    let out = "";
+    for (let i = 0; i < total; i++) {
+      const ch = SCRAMBLE_TEMPLATE[i];
+      if (ch === "\n") {
+        out += "\n";
+        continue;
+      }
+      const dist = i - scrambleState.reveal;
+      if (dist < 0) {
+        // already decoded: sharp
+        out += ch;
+      } else if (dist < 6) {
+        // decode front: blurred + glowing random
+        out += `<span class="scramble-char scrambling">${randomChar()}</span>`;
+      } else {
+        // not yet reached: faint noise
+        out += `<span class="scramble-char">${randomChar()}</span>`;
+      }
+    }
+    scrambleText.innerHTML = out + '<span class="scramble-cursor">▋</span>';
+  };
+
+  render();
+  scrambleState.timer = setInterval(render, 55);
+}
+
+function stopScramble() {
+  if (scrambleState.timer) {
+    clearInterval(scrambleState.timer);
+    scrambleState.timer = null;
+  }
+  processingOverlay.hidden = true;
+  scrambleText.innerHTML = "";
+}
+
 function recognize() {
   if (!state.file) {
     setStatus("Сначала выберите файл.", "error");
@@ -285,6 +373,7 @@ function recognize() {
   request.upload.onload = () => {
     setProgress(26, "Файл загружен");
     startProcessingProgress();
+    startScramble();
     setStatus("Qwen распознает и извлекает сущности. Это может занять несколько минут.");
   };
 
@@ -296,6 +385,8 @@ function recognize() {
     } catch {
       data = { detail: "Сервер вернул некорректный ответ." };
     }
+
+    stopScramble();
 
     if (request.status < 200 || request.status >= 300) {
       setStatus(data.detail || "Ошибка распознавания.", "error");
@@ -313,12 +404,14 @@ function recognize() {
 
   request.onerror = () => {
     clearInterval(state.progressTimer);
+    stopScramble();
     setStatus("Сетевая ошибка при распознавании.", "error");
     setBusy(false);
   };
 
   request.ontimeout = () => {
     clearInterval(state.progressTimer);
+    stopScramble();
     setStatus("Модель отвечает слишком долго. Попробуйте файл меньше или другой промпт.", "error");
     setBusy(false);
   };

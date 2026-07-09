@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>JPG/PDF → TXT · Qwen Vision</title>
-    <link rel="icon" type="image/png" href="/static/qwen.png?v=6" />
-    <link rel="stylesheet" href="/static/styles.css?v=6" />
+    <link rel="icon" type="image/png" href="/static/qwen.png?v=7" />
+    <link rel="stylesheet" href="/static/styles.css?v=7" />
   </head>
   <body>
     <div class="bg-decor" aria-hidden="true"><span></span></div>
@@ -14,7 +14,7 @@
       <div class="topbar-inner">
         <div class="brand">
           <span class="brand-logo">
-            <img src="/static/qwen.png?v=6" alt="Qwen" />
+            <img src="/static/qwen.png?v=7" alt="Qwen" />
           </span>
           <div class="brand-text">
             <h1>JPG/PDF <span class="arrow">→</span> TXT</h1>
@@ -78,7 +78,7 @@
           <div class="steps">
             <span id="stepUpload">Загрузка</span>
             <span id="stepVision" class="step-model">
-              <img src="/static/qwen.png?v=6" alt="" />
+              <img src="/static/qwen.png?v=7" alt="" />
               Qwen Vision
             </span>
             <span id="stepDone">Готово</span>
@@ -106,6 +106,15 @@
           </div>
           <p>Здесь появится структурированная выжимка.<br />TXT и JSON можно будет скачать отдельно.</p>
         </div>
+        <div id="processingOverlay" class="processing-overlay" hidden>
+          <div class="scramble">
+            <pre id="scrambleText" class="scramble-text"></pre>
+          </div>
+          <div class="processing-hint">
+            <span class="scramble-dot"></span>
+            Qwen Vision декодирует документ…
+          </div>
+        </div>
         <article id="renderedOutput" class="markdown-body" hidden></article>
       </section>
     </main>
@@ -127,6 +136,6 @@
       </section>
     </div>
 
-    <script src="/static/app.js?v=6"></script>
+    <script src="/static/app.js?v=7"></script>
   </body>
 </html>

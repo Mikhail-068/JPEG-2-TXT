@@ -823,6 +823,92 @@ textarea:focus {
   padding: 16px;
 }
 
+/* Processing overlay / scramble effect --------------------------------- */
+.processing-overlay {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(109, 92, 240, 0.08), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(245, 246, 252, 0.35));
+  border: 1px solid var(--border);
+}
+
+.scramble {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+}
+
+.scramble-text {
+  margin: 0;
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 14.5px/1.65 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color: var(--text);
+  tab-size: 2;
+}
+
+/* A character still being decoded: blurred + glowing accent */
+.scramble-char.scrambling {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(139, 123, 255, 0.85);
+  filter: blur(1.6px);
+  animation: charDecode 0.4s ease;
+}
+
+/* Cursor that chases the decode front */
+.scramble-cursor {
+  display: inline-block;
+  width: 8px;
+  margin-left: 1px;
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(139, 123, 255, 0.9);
+  animation: cursorBlink 0.9s steps(2, start) infinite;
+}
+
+@keyframes charDecode {
+  0%   { filter: blur(5px); opacity: 0.4; }
+  60%  { filter: blur(2px); opacity: 0.8; }
+  100% { filter: blur(1.6px); opacity: 1; }
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+.processing-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  align-self: flex-start;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border: 1px solid rgba(109, 92, 240, 0.2);
+}
+
+.scramble-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(139, 123, 255, 0.9);
+  animation: pulseDot 1.4s infinite;
+}
+
 /* Scrollbars ------------------------------------------------------------ */
 .upload-panel::-webkit-scrollbar,
 .result-empty::-webkit-scrollbar,
